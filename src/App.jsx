@@ -125,7 +125,7 @@ export default function App() {
       <section id="home" className="min-h-screen flex items-center justify-center pt-20 px-6 bg-gradient-to-br from-blue-50 to-white">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
-            HELLO.<br />I AM<br />
+            HELLO!<br />I AM<br />
             <span className="text-blue-600">HARSHIT</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
@@ -220,7 +220,7 @@ export default function App() {
           {/* Download Resume Button */}
           <div className="mt-12 text-center">
             <a 
-              href="https://drive.google.com/your-resume-link" 
+              href="https://drive.google.com/file/d/1UEcYeihSsyZGsXPOiSD4CoujSeaCtgg7/view?usp=sharing" 
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
@@ -350,10 +350,10 @@ export default function App() {
             <a href="https://github.com/xdominator365" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-lg">
               GitHub
             </a>
-            <a href="https://linkedin.com/in/harshit-yadav" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-lg">
+            <a href="https://linkedin.com/in/yd09" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-lg">
               LinkedIn
             </a>
-            <a href="https://leetcode.com/xdominator365" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-lg">
+            <a href="https://leetcode.com/maverick_69" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-lg">
               LeetCode
             </a>
           </div>
