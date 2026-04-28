@@ -1,13 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Harshit Portfolio</title>
-    <script type="module" crossorigin src="/myportfolio/assets/index-B1_zwcvd.js"></script>
-    <link rel="stylesheet" crossorigin href="/myportfolio/assets/index-CgEM68s8.css">
-  </head>
-  <body>
-    <div id="root"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harshit Yadav - Software Engineer</title>
+  <link rel="stylesheet" crossorigin href="/myportfolio/assets/index-skp6Smnz.css">
+</head>
+<body>
+  <div class="site-wrap" id="siteWrap">
+    
+    <!-- HOME (0, 0) - CENTER -->
+    <section class="panel" data-x-pos="0" data-y-pos="0">
+      <span class="panel-nav panel-nav-up">WORK</span>
+      <span class="panel-nav panel-nav-left-up">SKILLS</span>
+      <span class="panel-nav panel-nav-right-up">PROJECTS</span>
+      <span class="panel-nav panel-nav-left">ABOUT</span>
+      <span class="panel-nav panel-nav-right">EDUCATION</span>
+      <span class="panel-nav panel-nav-left-down">RESEARCH</span>
+      <span class="panel-nav panel-nav-right-down">CONTACT</span>
+      <span class="panel-nav panel-nav-down">TESTIMONIALS</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h1 class="hero-title">HELLO!<br>I AM<br><span class="accent">HARSHIT</span></h1>
+          <p class="hero-subtitle">Software Engineer | Backend Specialist</p>
+        </div>
+      </div>
+      
+      <div class="zoom-btn" id="zoomToggle" title="Zoom Out">🔍</div>
+    </section>
+
+    <!-- WORK (0, 1) - UP -->
+    <section class="panel" data-x-pos="0" data-y-pos="1">
+      <span class="panel-nav panel-nav-left">SKILLS</span>
+      <span class="panel-nav panel-nav-down">HOME</span>
+      <span class="panel-nav panel-nav-right">PROJECTS</span>
+      <span class="panel-nav panel-nav-right-down">EDUCATION</span>
+      <span class="panel-nav panel-nav-left-down">ABOUT</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h2 class="panel-title">WORK</h2>
+          <div class="work-item">
+            <h3>Accenture</h3>
+            <p class="role">Software Engineer</p>
+            <p class="duration">Jan 2023 – Present</p>
+            <ul class="details-list">
+              <li>Backend services using Python, AWS Lambda, DynamoDB</li>
+              <li>Resolved race conditions & system reliability</li>
+              <li>Performance testing with Locust</li>
+              <li>React components & Terraform automation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS (-1, 1) - UP-LEFT -->
+    <section class="panel" data-x-pos="-1" data-y-pos="1">
+      <span class="panel-nav panel-nav-down">ABOUT</span>
+      <span class="panel-nav panel-nav-right-down">HOME</span>
+      <span class="panel-nav panel-nav-right">WORK</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h2 class="panel-title">SKILLS</h2>
+          <div class="skills-grid">
+            <div class="skill-group">
+              <h4>Languages</h4>
+              <p>Python, Java, JavaScript</p>
+            </div>
+            <div class="skill-group">
+              <h4>Frameworks</h4>
+              <p>FastAPI, React, Express.js</p>
+            </div>
+            <div class="skill-group">
+              <h4>Platforms</h4>
+              <p>AWS, Linux, Docker</p>
+            </div>
+            <div class="skill-group">
+              <h4>Databases</h4>
+              <p>PostgreSQL, DynamoDB, MongoDB</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS (1, 1) - UP-RIGHT -->
+    <section class="panel" data-x-pos="1" data-y-pos="1">
+      <span class="panel-nav panel-nav-left">WORK</span>
+      <span class="panel-nav panel-nav-left-down">HOME</span>
+      <span class="panel-nav panel-nav-down">EDUCATION</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h2 class="panel-title">PROJECTS</h2>
+          <div class="project-item">
+            <h3>MyDhira – AI Trading Platform</h3>
+            <p class="date">Dec 2025</p>
+            <p class="desc">FastAPI, React, TypeScript, PostgreSQL</p>
+            <a href="https://github.com/xdominator365/smart-investor-platform" class="link-btn">→ GitHub</a>
+          </div>
+          <div class="project-item">
+            <h3>Claim Getter (Accenture)</h3>
+            <p class="date">Sep 2023</p>
+            <p class="desc">Python, AWS Lambda, DynamoDB</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT (-1, 0) - LEFT -->
+    <section class="panel" data-x-pos="-1" data-y-pos="0">
+      <span class="panel-nav panel-nav-up">SKILLS</span>
+      <span class="panel-nav panel-nav-right-up">WORK</span>
+      <span class="panel-nav panel-nav-right">HOME</span>
+      <span class="panel-nav panel-nav-down">RESEARCH</span>
+      <span class="panel-nav panel-nav-right-down">TESTIMONIALS</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h2 class="panel-title">ABOUT ME</h2>
+          <div class="about-content">
+            <p>Software Engineer with <strong>3+ years</strong> of experience building scalable backend systems using <strong>Python and AWS</strong>.</p>
+            <p>Expertise in concurrency handling, API design, performance optimization, and cloud development.</p>
+            <p>Currently at <strong>Accenture</strong> building microservices and automating deployments.</p>
+            <div class="social-links">
+              <a href="https://github.com/xdominator365" target="_blank">GitHub</a>
+              <a href="https://linkedin.com/in/harshit-yadav" target="_blank">LinkedIn</a>
+              <a href="https://leetcode.com/xdominator365" target="_blank">LeetCode</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION (1, 0) - RIGHT -->
+    <section class="panel" data-x-pos="1" data-y-pos="0">
+      <span class="panel-nav panel-nav-left-up">WORK</span>
+      <span class="panel-nav panel-nav-up">PROJECTS</span>
+      <span class="panel-nav panel-nav-left">HOME</span>
+      <span class="panel-nav panel-nav-down">CONTACT</span>
+      <span class="panel-nav panel-nav-left-down">TESTIMONIALS</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h2 class="panel-title">EDUCATION</h2>
+          <div class="edu-item">
+            <h3>B.Tech Information Technology</h3>
+            <p class="school">Jaypee University of Information Technology</p>
+            <p class="year">2018 - 2022</p>
+            <p class="cgpa">CGPA: <strong>8.30 / 10</strong></p>
+          </div>
+          <div class="certs">
+            <h4>Certifications</h4>
+            <ul>
+              <li>AWS Certified Developer - Associate (2026-2029)</li>
+              <li>HackerRank 5-Star</li>
+              <li>Google Kickstart Participant</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH (-1, -1) - DOWN-LEFT -->
+    <section class="panel" data-x-pos="-1" data-y-pos="-1">
+      <span class="panel-nav panel-nav-up">ABOUT</span>
+      <span class="panel-nav panel-nav-right-up">HOME</span>
+      <span class="panel-nav panel-nav-right">TESTIMONIALS</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h2 class="panel-title">RESEARCH</h2>
+          <div class="research-content">
+            <h3>Technical Interests</h3>
+            <ul class="research-list">
+              <li><strong>Distributed Systems:</strong> Exploring scalable architecture patterns</li>
+              <li><strong>Performance Optimization:</strong> Profiling and optimization techniques</li>
+              <li><strong>Cloud Architecture:</strong> AWS infrastructure and best practices</li>
+              <li><strong>Microservices:</strong> Building resilient service-oriented systems</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS (0, -1) - DOWN -->
+    <section class="panel" data-x-pos="0" data-y-pos="-1">
+      <span class="panel-nav panel-nav-left">RESEARCH</span>
+      <span class="panel-nav panel-nav-left-up">ABOUT</span>
+      <span class="panel-nav panel-nav-up">HOME</span>
+      <span class="panel-nav panel-nav-right-up">EDUCATION</span>
+      <span class="panel-nav panel-nav-right">CONTACT</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h2 class="panel-title">TESTIMONIALS</h2>
+          <div class="testimonial">
+            <p class="quote">"Harshit is an excellent engineer with strong backend skills and attention to detail."</p>
+            <p class="author">- Accenture Team Lead</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT (1, -1) - DOWN-RIGHT -->
+    <section class="panel" data-x-pos="1" data-y-pos="-1">
+      <span class="panel-nav panel-nav-left">TESTIMONIALS</span>
+      <span class="panel-nav panel-nav-left-up">HOME</span>
+      <span class="panel-nav panel-nav-up">EDUCATION</span>
+      
+      <div class="panel-content">
+        <div class="panel-inner">
+          <h2 class="panel-title">CONTACT</h2>
+          <div class="contact-info">
+            <p><strong>Email:</strong> yharshit178@gmail.com</p>
+            <p><strong>Phone:</strong> +91-8318749400</p>
+            <p><strong>Location:</strong> India</p>
+          </div>
+          <div class="contact-links">
+            <a href="https://github.com/xdominator365" target="_blank" class="contact-btn">GitHub</a>
+            <a href="https://linkedin.com/in/harshit-yadav" target="_blank" class="contact-btn">LinkedIn</a>
+            <a href="mailto:yharshit178@gmail.com" class="contact-btn">Email</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+    <script src="/src/grid.js"></script>
   </body>
 </html>
