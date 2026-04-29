@@ -206,7 +206,7 @@ body {
 
 .panel-nav {
   position: absolute;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -692,7 +692,17 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+  .panel-nav {
+    font-size: 16px;
+  }
+}
+
 @media (max-width: 540px) {
+  .panel-nav {
+    font-size: 14px;
+  }
+
   .panel-content {
     padding: 30px 15px;
   }
@@ -749,6 +759,62 @@ body {
     padding: 8px 20px;
     font-size: 0.85rem;
   }
+}
+
+/* =================================================================
+   LINK STYLING
+   ================================================================= */
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  display: inline-block;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+a:visited {
+  color: inherit;
+}
+
+.link-icon {
+  display: inline-block;
+  margin-left: 0.25rem;
+  font-size: 0.8em;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  vertical-align: super;
+}
+
+a:hover .link-icon {
+  opacity: 1;
+}
+
+/* Download Resume Button */
+.download-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--accent);
+  color: var(--primary-dark);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.download-btn:hover {
+  background: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 150, 173, 0.3);
+}
+
+.download-btn:visited {
+  color: var(--primary-dark);
 }
 
 /* Accessibility improvements */
