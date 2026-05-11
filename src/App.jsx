@@ -169,7 +169,7 @@ export default function App() {
                 <a href="https://github.com/xdominator365" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-2">
                   GitHub →
                 </a>
-                <a href="https://linkedin.com/in/harshit-yadav" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-2">
+                <a href="https://linkedin.com/in/yd09" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-2">
                   LinkedIn →
                 </a>
                 <a href="https://leetcode.com/xdominator365" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-2">
