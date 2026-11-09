@@ -20,6 +20,7 @@ export default function CommandPalette({ open, setOpen, toast }) {
       },
       { group: "Actions", label: "Download résumé (PDF)", icon: "⇩", run: () => window.open(profile.resumeUrl, "_blank") },
       { group: "Actions", label: "Send an email", icon: "✉", run: () => (location.href = `mailto:${profile.email}`) },
+      { group: "Actions", label: "Chat on WhatsApp", icon: "☏", run: () => window.open(`https://wa.me/${profile.whatsapp}`, "_blank") },
       ...socials.map((s) => ({ group: "Links", label: `Open ${s.label}`, icon: "↗", run: () => window.open(s.href, "_blank") })),
       {
         group: "Links",

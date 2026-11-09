@@ -6,6 +6,8 @@ import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import CommandPalette from "./components/CommandPalette";
 import { About, Contact, Credentials, Experience, Footer, Marquee, Projects, Skills } from "./components/Sections";
+import { Life, Vision } from "./components/Persona";
+import { trackVisit } from "./lib/notify";
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -17,6 +19,10 @@ export default function App() {
     setToastMsg(msg);
     clearTimeout(toast.t);
     toast.t = setTimeout(() => setToastMsg(null), 2400);
+  }, []);
+
+  useEffect(() => {
+    trackVisit();
   }, []);
 
   useEffect(() => {
@@ -43,8 +49,10 @@ export default function App() {
         <About />
         <Experience />
         <Projects />
+        <Vision />
         <Skills />
         <Credentials />
+        <Life />
         <Contact toast={toast} />
       </main>
       <Footer />

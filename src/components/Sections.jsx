@@ -15,10 +15,11 @@ import {
 } from "../data/content";
 import { useClock, useCountUp, useMagnetic, useReveal, useSpotlight, useTilt } from "../hooks";
 import { ArchitectureDiagram, TradingChart } from "./ProjectVisuals";
+import { sendMessage, trackEvent } from "../lib/notify";
 
 /* ---------- shared ---------- */
 
-function SectionHead({ index, kicker, title, children }) {
+export function SectionHead({ index, kicker, title, children }) {
   const [ref, visible] = useReveal();
   return (
     <div ref={ref} className={`section-head ${visible ? "is-visible" : ""}`}>
@@ -39,7 +40,7 @@ function SectionHead({ index, kicker, title, children }) {
   );
 }
 
-function Reveal({ as: Tag = "div", className = "", delay = 0, children, ...rest }) {
+export function Reveal({ as: Tag = "div", className = "", delay = 0, children, ...rest }) {
   const [ref, visible] = useReveal();
   return (
     <Tag ref={ref} className={`reveal ${visible ? "is-visible" : ""} ${className}`} style={{ "--d": `${delay}s` }} {...rest}>
@@ -90,30 +91,63 @@ function Stat({ s, start, i }) {
   );
 }
 
+function PhotoStack() {
+  const photos = profile.photos;
+  const [front, setFront] = useState(0);
+  const tilt = useTilt(8);
+  const next = () => setFront((f) => (f + 1) % photos.length);
+  return (
+    <div className="photo-stack" data-count={photos.length}>
+      {photos.map((src, i) => {
+        const pos = (i - front + photos.length) % photos.length;
+        return (
+          <div
+            key={src}
+            className={`portrait ${pos === 0 ? "tilt is-front" : "is-back"}`}
+            ref={pos === 0 ? tilt : undefined}
+            style={{ "--pos": pos }}
+            onClick={photos.length > 1 ? next : undefined}
+            data-cursor={photos.length > 1 ? (pos === 0 ? "Shuffle" : "Bring up") : undefined}
+          >
+            <div className="portrait-border" />
+            <img src={src} alt={`Photo of ${profile.name}`} loading="lazy" />
+            <div className="portrait-shine" />
+            {pos === 0 && (
+              <div className="portrait-tag">
+                <span className="pulse-dot" />
+                <div>
+                  <strong>{profile.name}</strong>
+                  <small>{profile.title} · {profile.company}</small>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {photos.length > 1 && (
+        <div className="stack-dots">
+          {photos.map((_, i) => (
+            <button key={i} className={i === front ? "on" : ""} onClick={() => setFront(i)} aria-label={`Show photo ${i + 1}`} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function About() {
   const [statsRef, statsVisible] = useReveal({ threshold: 0.4 });
-  const tilt = useTilt(8);
   return (
     <section id="about" className="section">
       <SectionHead index="01" kicker="About" title="Engineer who sweats the edge cases.">
-        I like the hard parts of backend engineering — the race condition that only shows up at 2 a.m.,
+        I like the hard parts of engineering — the race condition that only shows up at 2 a.m.,
         the endpoint that needs to be ten times faster, the deploy that should never need a human.
+        And I like building things that outlast the sprint.
       </SectionHead>
 
       <div className="about-grid">
         <Reveal className="portrait-wrap" delay={0.1}>
-          <div className="portrait tilt" ref={tilt}>
-            <div className="portrait-border" />
-            <img src={profile.portrait} alt={`Portrait of ${profile.name}`} loading="lazy" />
-            <div className="portrait-shine" />
-            <div className="portrait-tag">
-              <span className="pulse-dot" />
-              <div>
-                <strong>{profile.name}</strong>
-                <small>{profile.title} · {profile.company}</small>
-              </div>
-            </div>
-          </div>
+          <PhotoStack />
         </Reveal>
 
         <div className="about-copy">
@@ -160,36 +194,59 @@ export function About() {
 
 export function Experience() {
   const [lineRef, lineVisible] = useReveal({ threshold: 0.1 });
-  const job = experience[0];
+  const [active, setActive] = useState(0);
+  const job = experience[active];
   const tilt = useTilt(4);
   return (
     <section id="experience" className="section">
       <SectionHead index="02" kicker="Experience" title="Where I ship things.">
-        Production systems, real users, on-call reality. Here's what I've been building.
+        Production systems, real users, on-call reality. {profile.yearsOfExperience}+ years and counting.
       </SectionHead>
 
       <div className="exp-grid">
         <Reveal className="job-card-wrap" delay={0.05}>
-          <article className="job-card tilt spot-card" ref={tilt}>
+          <div className="job-tabs" role="tablist" style={{ "--active": active, "--count": experience.length }}>
+            <span className="job-tabs-indicator" />
+            {experience.map((j, i) => (
+              <button
+                key={j.id}
+                role="tab"
+                aria-selected={i === active}
+                className={i === active ? "is-active" : ""}
+                onClick={() => setActive(i)}
+              >
+                {j.current && <span className="pulse-dot" />}
+                {j.company}
+              </button>
+            ))}
+          </div>
+          <article className="job-card tilt spot-card" ref={tilt} key={job.id}>
             <div className="job-head">
-              <div className="job-logo">A</div>
+              <div className="job-logo" style={{ background: job.logoBg }}>{job.logo}</div>
               <div>
                 <h3>{job.role}</h3>
-                <p className="job-company">{job.company}</p>
+                <p className="job-company">
+                  {job.company}
+                  {job.unit && <span className="job-unit"> · {job.unit}</span>}
+                  <span className="job-place"> · {job.place}</span>
+                </p>
               </div>
-              <span className="job-period">
+              <span className={`job-period ${job.current ? "" : "past"}`}>
                 {job.current && <span className="pulse-dot" />}
                 {job.period}
               </span>
             </div>
-            <ul className="job-list">
-              {job.highlights.map((h, i) => (
-                <Reveal as="li" key={i} delay={0.1 + i * 0.08} className={`accent-${h.accent}`}>
-                  <span className="job-tag">{h.tag}</span>
-                  <span>{h.text}</span>
-                </Reveal>
-              ))}
-            </ul>
+            {job.summary && <p className="job-summary">{job.summary}</p>}
+            {job.highlights.length > 0 && (
+              <ul className="job-list">
+                {job.highlights.map((h, i) => (
+                  <li key={i} className={`accent-${h.accent}`} style={{ "--i": i }}>
+                    <span className="job-tag">{h.tag}</span>
+                    <span>{h.text}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
             <div className="chips">
               {job.stack.map((s) => (
                 <span key={s} className="chip">{s}</span>
@@ -278,7 +335,7 @@ export function Skills() {
   const spot = useSpotlight();
   return (
     <section id="skills" className="section">
-      <SectionHead index="04" kicker="Toolbox" title="The stack I reach for.">
+      <SectionHead index="05" kicker="Toolbox" title="The stack I reach for.">
         Python on the backend, AWS underneath, React on top — and the tooling to prove it all works under load.
       </SectionHead>
       <div className="bento" ref={spot}>
@@ -318,7 +375,7 @@ export function Credentials() {
   const { featured, others } = certifications;
   return (
     <section id="credentials" className="section">
-      <SectionHead index="05" kicker="Credentials" title="Verified, certified, graduated." />
+      <SectionHead index="06" kicker="Credentials" title="Verified, certified, graduated." />
 
       <div className="cred-grid">
         <Reveal className="aws-wrap" delay={0.05}>
@@ -393,6 +450,77 @@ export function Credentials() {
 
 /* ---------- contact + footer ---------- */
 
+function ContactForm({ toast }) {
+  const [form, setForm] = useState({ name: "", email: "", message: "", website: "" });
+  const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (form.website) return setStatus("sent"); // honeypot: bots fill hidden fields
+    const last = Number(sessionStorage.getItem("hy-last-msg") || 0);
+    if (Date.now() - last < 30000) return toast("Easy there — give it 30 seconds between messages");
+    setStatus("sending");
+    try {
+      await sendMessage(form);
+      sessionStorage.setItem("hy-last-msg", String(Date.now()));
+      setStatus("sent");
+      toast("Message delivered straight to my phone 📲");
+      setForm({ name: "", email: "", message: "", website: "" });
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const waText = encodeURIComponent(
+    form.message ? `Hi Harshit! ${form.name ? `I'm ${form.name}. ` : ""}${form.message}` : "Hi Harshit! I came across your portfolio and wanted to connect."
+  );
+
+  return (
+    <form className={`contact-form is-${status}`} onSubmit={submit}>
+      <div className="form-row">
+        <label className="field">
+          <input required maxLength={80} value={form.name} onChange={set("name")} placeholder=" " autoComplete="name" />
+          <span>Your name</span>
+        </label>
+        <label className="field">
+          <input type="email" maxLength={120} value={form.email} onChange={set("email")} placeholder=" " autoComplete="email" />
+          <span>Email (so I can reply)</span>
+        </label>
+      </div>
+      <label className="field">
+        <textarea required minLength={5} maxLength={2000} rows={4} value={form.message} onChange={set("message")} placeholder=" " />
+        <span>What's on your mind?</span>
+      </label>
+      <input className="hp" tabIndex={-1} autoComplete="off" value={form.website} onChange={set("website")} aria-hidden="true" />
+      <div className="form-actions">
+        <button className="btn btn-primary" type="submit" disabled={status === "sending"} data-cursor="Send">
+          <span>{status === "sending" ? "Sending…" : status === "sent" ? "Sent — thank you!" : "Send message"}</span>
+          <span className="btn-arrow">{status === "sent" ? "✓" : "➤"}</span>
+        </button>
+        <a
+          className="btn btn-whatsapp"
+          href={`https://wa.me/${profile.whatsapp}?text=${waText}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor="Chat"
+          onClick={() => trackEvent("💚 WhatsApp chat opened from portfolio")}
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z" />
+          </svg>
+          <span>WhatsApp me</span>
+        </a>
+      </div>
+      {status === "error" && (
+        <p className="form-error">
+          Couldn't send right now — please use WhatsApp or email <a href={`mailto:${profile.email}`}>{profile.email}</a>.
+        </p>
+      )}
+    </form>
+  );
+}
+
 export function Contact({ toast }) {
   const big = useMagnetic(0.2);
   const time = useClock(profile.timezone);
@@ -406,24 +534,30 @@ export function Contact({ toast }) {
   };
   return (
     <section id="contact" className="section contact">
-      <SectionHead index="06" kicker="Contact" title="Let's build something that scales." />
+      <SectionHead index="08" kicker="Contact" title="Let's build something that scales." />
       <Reveal className="contact-card" delay={0.1}>
         <div className="contact-glow" />
-        <p className="contact-lede">
-          Have a role, a project, or a gnarly backend problem? My inbox is open.
-        </p>
-        <a ref={big} href={`mailto:${profile.email}`} className="contact-email" data-cursor="Say hi">
-          <span className="grad-anim">{profile.email}</span>
-        </a>
-        <div className="contact-actions">
-          <button className="btn btn-primary" onClick={copy} data-cursor="Copy">
-            <span>{copied ? "Copied ✓" : "Copy email"}</span>
-            <span className="btn-arrow">⧉</span>
-          </button>
-          <a className="btn btn-ghost" href={`tel:${profile.phone.replace(/-/g, "")}`}>
-            <span>{profile.phone}</span>
-            <span className="btn-arrow">☏</span>
-          </a>
+        <div className="contact-split">
+          <div className="contact-left">
+            <p className="contact-lede">
+              A role, a product idea, an investment conversation, or a gnarly backend problem — drop a message.
+              It lands on my phone instantly.
+            </p>
+            <a ref={big} href={`mailto:${profile.email}`} className="contact-email" data-cursor="Say hi">
+              <span className="grad-anim">{profile.email}</span>
+            </a>
+            <div className="contact-actions">
+              <button className="btn btn-ghost btn-sm" onClick={copy} data-cursor="Copy">
+                <span>{copied ? "Copied ✓" : "Copy email"}</span>
+                <span className="btn-arrow">⧉</span>
+              </button>
+              <a className="btn btn-ghost btn-sm" href={`tel:${profile.phone.replace(/-/g, "")}`}>
+                <span>{profile.phone}</span>
+                <span className="btn-arrow">☏</span>
+              </a>
+            </div>
+          </div>
+          <ContactForm toast={toast} />
         </div>
         <div className="contact-meta">
           <span><i className="pulse-dot" /> {profile.location} · IST {time}</span>
@@ -448,7 +582,7 @@ export function Footer() {
         <span className="outline-text">HARSHIT</span>
       </div>
       <div className="footer-row">
-        <span>© {new Date().getFullYear()} {profile.name}. Designed & engineered by hand.</span>
+        <span>© {new Date().getFullYear()} {profile.name}. Designed & engineered by hand. Anonymous visit stats are collected.</span>
         <span className="footer-build">
           <i className="pulse-dot" /> build <code>{__COMMIT__}</code> · {built}
         </span>

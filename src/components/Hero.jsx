@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { profile } from "../data/content";
+import { trackEvent } from "../lib/notify";
 import { prefersReducedMotion, scrollToId, useMagnetic, useScramble, useTilt, useTypewriter } from "../hooks";
 
 // Token stream for the live-typing editor: [className, text]
@@ -7,10 +8,11 @@ const CODE = [
   ["k", "from"], ["p", " "], ["n", "engineers"], ["p", " "], ["k", "import"], ["p", " "], ["c", "Engineer"], ["p", "\n\n"],
   ["d", "@dataclass"], ["p", "\n"],
   ["k", "class"], ["p", " "], ["c", "Harshit"], ["p", "("], ["c", "Engineer"], ["p", "):\n"],
-  ["p", "    role     "], ["o", "="], ["p", " "], ["s", '"Software Engineer"'], ["p", "\n"],
-  ["p", "    company  "], ["o", "="], ["p", " "], ["s", '"Accenture"'], ["p", "\n"],
+  ["p", "    role     "], ["o", "="], ["p", " "], ["s", '"Senior Software Engineer"'], ["p", "\n"],
+  ["p", "    company  "], ["o", "="], ["p", " "], ["s", '"BDO India"'], ["p", "  "], ["m", "# ex-Accenture"], ["p", "\n"],
   ["p", "    stack    "], ["o", "="], ["p", " ["], ["s", '"Python"'], ["p", ", "], ["s", '"AWS"'], ["p", ", "], ["s", '"FastAPI"'], ["p", "]\n"],
-  ["p", "    certified"], ["o", "="], ["p", " "], ["s", '"AWS Developer"'], ["p", "\n\n"],
+  ["p", "    certified"], ["o", "="], ["p", " "], ["s", '"AWS Developer"'], ["p", "\n"],
+  ["p", "    long_game"], ["o", "="], ["p", " "], ["s", '"build → invest → compound"'], ["p", "\n\n"],
   ["p", "    "], ["k", "async def"], ["p", " "], ["f", "ship"], ["p", "("], ["n", "self"], ["p", ", idea):\n"],
   ["p", "        "], ["k", "async with"], ["p", " "], ["n", "self"], ["p", "."], ["f", "lock"], ["p", "(idea):  "], ["m", "# no race conditions"], ["p", "\n"],
   ["p", "            "], ["k", "return await"], ["p", " "], ["f", "deploy"], ["p", "(idea, scale"], ["o", "="], ["s", '"∞"'], ["p", ")"],
@@ -92,7 +94,7 @@ export default function Hero({ ready }) {
 
         <p className="hero-sub reveal-up" style={{ "--d": "0.75s" }}>
           I build <em>scalable backend systems</em> with Python and AWS — APIs that stay fast under load,
-          and data that stays consistent when a thousand requests hit at once.
+          and data that stays consistent when a thousand requests hit at once. Next: products of my own.
         </p>
 
         <div className="hero-ctas reveal-up" style={{ "--d": "0.9s" }}>
@@ -100,7 +102,7 @@ export default function Hero({ ready }) {
             <span>View my work</span>
             <span className="btn-arrow">→</span>
           </button>
-          <a ref={cta2} className="btn btn-ghost" href={profile.resumeUrl} target="_blank" rel="noopener noreferrer" data-cursor="PDF">
+          <a ref={cta2} className="btn btn-ghost" href={profile.resumeUrl} target="_blank" rel="noopener noreferrer" data-cursor="PDF" onClick={() => trackEvent("📄 Someone opened your résumé")}>
             <span>Download résumé</span>
             <span className="btn-arrow">⇩</span>
           </a>
@@ -111,7 +113,7 @@ export default function Hero({ ready }) {
           <span className="sep" />
           <span><b>AWS</b> Certified Developer</span>
           <span className="sep" />
-          <span><b>IN</b> {profile.location}</span>
+          <span><b>📍</b> {profile.location}</span>
         </div>
       </div>
 

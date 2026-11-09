@@ -6,8 +6,10 @@ export const SECTIONS = [
   { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
+  { id: "vision", label: "Vision" },
   { id: "skills", label: "Skills" },
   { id: "credentials", label: "Credentials" },
+  { id: "life", label: "Life" },
   { id: "contact", label: "Contact" },
 ];
 const IDS = SECTIONS.map((s) => s.id);
