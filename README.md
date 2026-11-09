@@ -22,8 +22,11 @@ Personal portfolio of **Harshit Yadav**, Software Engineer @ Accenture · AWS Ce
 npm install
 npm run dev       # local dev server
 npm run build     # production build → dist/
-npm run deploy    # build + publish to the gh-pages branch
+npm run deploy    # manual build + publish to gh-pages (optional)
 ```
+
+Pushing to `main` deploys automatically via `.github/workflows/deploy.yml`,
+which builds the site and publishes `dist/` to the `gh-pages` branch.
 
 ## Structure
 
