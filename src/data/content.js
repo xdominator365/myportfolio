@@ -49,7 +49,7 @@ export const profile = {
 export const socials = [
   { label: "GitHub", handle: "xdominator365", href: "https://github.com/xdominator365" },
   { label: "LinkedIn", handle: "in/yd09", href: "https://linkedin.com/in/yd09" },
-  { label: "LeetCode", handle: "xdominator365", href: "https://leetcode.com/xdominator365" },
+  { label: "LeetCode", handle: "maverick_69", href: "https://leetcode.com/u/maverick_69/" },
 ];
 
 export const stats = [
