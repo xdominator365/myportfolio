@@ -302,8 +302,16 @@ function ProjectCard({ p, i }) {
           ))}
         </div>
         {p.link ? (
-          <a ref={magnetic} href={p.link} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm" data-cursor="Code">
-            <span>View source on GitHub</span>
+          <a
+            ref={magnetic}
+            href={p.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary btn-sm"
+            data-cursor="Launch"
+            onClick={() => trackEvent(`🚀 Someone opened ${p.name} from your portfolio`)}
+          >
+            <span>{p.linkLabel || "View project"}</span>
             <span className="btn-arrow">↗</span>
           </a>
         ) : (

@@ -151,7 +151,8 @@ export const projects = [
       "Developed React + TypeScript dashboards for analytics.",
     ],
     stack: ["React", "TypeScript", "FastAPI", "PostgreSQL", "Python"],
-    link: "https://github.com/xdominator365/smart-investor-platform",
+    link: "https://dhira-gamma.vercel.app/",
+    linkLabel: "Try the live app",
   },
   {
     id: "claim-getter",
