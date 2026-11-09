@@ -38,4 +38,4 @@ jobs:
           publish_branch: gh-pages
           user_name: xdominator365
           user_email: xdominator365@gmail.com
-          commit_message: "Deploy ${{ github.sha }}"
+          commit_message: "Deploy"
