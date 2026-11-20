@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xdominator365.github.io/myportfolio/sitemap.xml
