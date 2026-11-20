@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Vary: Origin
+Content-Length: 286
+Content-Type: text/xml
+Last-Modified: Fri, 20 Nov 2026 10:02:37 GMT
+ETag: W/"286-1795168957582"
+Cache-Control: no-cache
+Date: Fri, 20 Nov 2026 10:03:16 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://xdominator365.github.io/myportfolio/</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

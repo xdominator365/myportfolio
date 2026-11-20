@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Vary: Origin
+Content-Length: 89
+Content-Type: text/plain
+Last-Modified: Fri, 20 Nov 2026 10:02:37 GMT
+ETag: W/"89-1795168957582"
+Cache-Control: no-cache
+Date: Fri, 20 Nov 2026 10:03:16 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+User-agent: *
+Allow: /
+
+Sitemap: https://xdominator365.github.io/myportfolio/sitemap.xml
