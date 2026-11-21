@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/fetch-contributions.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
