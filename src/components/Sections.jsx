@@ -16,6 +16,7 @@ import {
 import { useClock, useCountUp, useMagnetic, useReveal, useSpotlight, useTilt } from "../hooks";
 import { ArchitectureDiagram, TradingChart } from "./ProjectVisuals";
 import { sendMessage, trackEvent } from "../lib/notify";
+import ContributionGraph from "./ContributionGraph";
 
 /* ---------- shared ---------- */
 
@@ -186,6 +187,8 @@ export function About() {
           </Reveal>
         </div>
       </div>
+
+      <ContributionGraph />
     </section>
   );
 }
