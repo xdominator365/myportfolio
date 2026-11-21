@@ -7,6 +7,7 @@ export const SECTIONS = [
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "vision", label: "Vision" },
+  { id: "writing", label: "Writing" },
   { id: "skills", label: "Skills" },
   { id: "credentials", label: "Credentials" },
   { id: "life", label: "Life" },
@@ -93,7 +94,7 @@ export default function Nav({ onOpenPalette }) {
       <div className={`mobile-menu ${open ? "is-open" : ""}`} aria-hidden={!open}>
         {SECTIONS.map((s, i) => (
           <button key={s.id} style={{ "--i": i }} onClick={() => go(s.id)} tabIndex={open ? 0 : -1}>
-            <small>0{i + 1}</small>
+            <small>{String(i + 1).padStart(2, "0")}</small>
             {s.label}
           </button>
         ))}
