@@ -250,7 +250,5 @@ export function useClock(timeZone) {
   return time;
 }
 
-export const scrollToId = (id) => {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
-};
+/** Smooth-scroll to a section and record it in the URL (see lib/router). */
+export { navigateTo as scrollToId } from "../lib/router";

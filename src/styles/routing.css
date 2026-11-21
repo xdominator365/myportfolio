@@ -1,0 +1,52 @@
+/* ---------- hash routing: arrival sweep + copy-link anchors ---------- */
+
+.section-head.is-arrived .kicker {
+  animation: arrive-kicker 1.4s var(--ease) both;
+}
+.section-head.is-arrived .kicker-line {
+  animation: arrive-line 1.4s var(--ease) both;
+}
+@keyframes arrive-line {
+  0% { width: 48px; }
+  35% { width: 160px; height: 2px; box-shadow: 0 0 14px var(--cyan); }
+  100% { width: 48px; height: 1px; box-shadow: none; }
+}
+@keyframes arrive-kicker {
+  0% { letter-spacing: 0.3em; opacity: 0.4; }
+  40% { color: var(--cyan); }
+  100% { letter-spacing: normal; opacity: 1; }
+}
+
+.anchor-link {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-left: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font: 600 13px/1 var(--font-mono);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), color 0.2s, border-color 0.2s;
+}
+.section-head:hover .anchor-link,
+.anchor-link:focus-visible {
+  opacity: 1;
+  transform: none;
+}
+.anchor-link:hover {
+  color: var(--text);
+  border-color: var(--violet);
+}
+.anchor-link.is-copied {
+  color: var(--green);
+  border-color: var(--green);
+}
+@media (hover: none) {
+  .anchor-link {
+    opacity: 0.7;
+    transform: none;
+  }
+}

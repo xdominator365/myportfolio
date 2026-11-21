@@ -1,0 +1,6 @@
+load         (none) | Harshit Yadav — Software Engineer | histlen=2
+scroll→exp   #experience | Experience — Harshit Yadav | histlen=2
+nav→contact  #contact | Contact — Harshit Yadav | histlen=3
+nav→vision   #vision | Vision — Harshit Yadav | histlen=4
+back         #contact | Contact — Harshit Yadav | histlen=4 20
+forward      #vision | Vision — Harshit Yadav | histlen=4

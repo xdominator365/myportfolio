@@ -16,8 +16,34 @@ import {
 import { useClock, useCountUp, useMagnetic, useReveal, useSpotlight, useTilt } from "../hooks";
 import { ArchitectureDiagram, TradingChart } from "./ProjectVisuals";
 import { sendMessage, trackEvent } from "../lib/notify";
+import { sectionUrl } from "../lib/router";
 
 /* ---------- shared ---------- */
+
+function AnchorLink({ kicker }) {
+  const [copied, setCopied] = useState(false);
+  const copy = (e) => {
+    const id = e.currentTarget.closest("section")?.id;
+    if (!id) return;
+    e.preventDefault();
+    navigator.clipboard?.writeText(sectionUrl(id)).then(() => {
+      setCopied(true);
+      window.dispatchEvent(new CustomEvent("hy:toast", { detail: `Link to ${kicker} copied — paste it anywhere` }));
+      setTimeout(() => setCopied(false), 1800);
+    });
+  };
+  return (
+    <button
+      type="button"
+      className={`anchor-link ${copied ? "is-copied" : ""}`}
+      onClick={copy}
+      aria-label={`Copy link to the ${kicker} section`}
+      data-cursor="Copy link"
+    >
+      {copied ? "✓" : "#"}
+    </button>
+  );
+}
 
 export function SectionHead({ index, kicker, title, children }) {
   const [ref, visible] = useReveal();
@@ -27,6 +53,7 @@ export function SectionHead({ index, kicker, title, children }) {
         <span className="kicker-index">{index}</span>
         <span className="kicker-line" />
         {kicker}
+        <AnchorLink kicker={kicker} />
       </span>
       <h2 className="section-title">
         {title.split(" ").map((word, i) => (
