@@ -1,0 +1,262 @@
+/* ---------- Claim Getter: interactive architecture playground ---------- */
+
+.arch-node {
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.35s var(--ease);
+}
+.arch-hit {
+  fill: transparent;
+}
+.arch-svg.has-focus .arch-node:not(.is-selected) {
+  opacity: 0.38;
+}
+.arch-node .node {
+  transition: stroke 0.25s, fill 0.25s;
+}
+.arch-node:hover .node,
+.arch-node:focus-visible .node,
+.arch-node.is-selected .node {
+  stroke: var(--cyan);
+  fill: rgba(34, 211, 238, 0.08);
+}
+.arch-node.is-selected .node-hot {
+  stroke: var(--amber);
+  fill: rgba(245, 158, 11, 0.2);
+}
+.arch-node.is-selected {
+  filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.55));
+}
+.arch-node:focus-visible {
+  filter: drop-shadow(0 0 6px var(--cyan));
+}
+
+.packet.p-amber { fill: #fcd34d; }
+.packet.p-red { fill: #fb7185; }
+.wire-retry {
+  stroke: var(--amber);
+  opacity: 0.6;
+}
+.arch-retry-label {
+  fill: var(--amber);
+  font-size: 9px;
+  opacity: 0.85;
+}
+
+.arch-lock {
+  fill: rgba(52, 211, 153, 0.12);
+  stroke: var(--green);
+}
+.is-broken .arch-lock {
+  fill: rgba(251, 113, 133, 0.14);
+  stroke: #fb7185;
+  stroke-dasharray: 3 3;
+}
+.is-broken .wire-strong {
+  stroke: #fb7185;
+}
+
+/* collisions */
+.arch-db {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.is-broken .arch-db {
+  animation: arch-shake 0.45s var(--ease);
+}
+.is-broken .arch-db .node {
+  animation: arch-red 0.7s ease;
+}
+.arch-loss {
+  fill: #fb7185;
+  font: 700 10px var(--font-mono);
+  text-anchor: middle;
+  animation: arch-float 1.1s ease-out forwards;
+}
+@keyframes arch-shake {
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(1px); }
+}
+@keyframes arch-red {
+  from { fill: rgba(251, 113, 133, 0.45); stroke: #fb7185; }
+}
+@keyframes arch-float {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-14px); }
+}
+
+/* status pill */
+.arch-status.ok {
+  color: #6ee7b7;
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.3);
+}
+.arch-status.ok i {
+  background: var(--green);
+}
+
+/* explanation panel */
+.arch-panel {
+  position: relative;
+  min-height: 132px;
+  margin-top: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--border);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.arch-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.arch-panel-head strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 15px;
+}
+.arch-step {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font: 600 10.5px var(--font-mono);
+  color: var(--cyan);
+  background: rgba(34, 211, 238, 0.1);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+.arch-close {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--dim);
+  font-size: 18px;
+  line-height: 1;
+}
+.arch-close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+.arch-panel dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 12px;
+}
+.arch-panel dt {
+  font: 600 10.5px/2 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+  white-space: nowrap;
+}
+.arch-panel dd {
+  color: #d4d2e6;
+}
+.arch-hint {
+  display: grid;
+  place-items: center;
+  min-height: 100px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--dim);
+}
+.arch-progress {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+.arch-progress button {
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.3s;
+}
+.arch-progress button.on {
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
+}
+
+/* controls */
+.arch-controls {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.arch-btn {
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-2);
+  background: rgba(255, 255, 255, 0.04);
+  font: 500 12px var(--font-mono);
+  color: var(--text);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s var(--ease);
+}
+.arch-btn:hover:not(:disabled) {
+  border-color: var(--violet);
+  background: rgba(139, 92, 246, 0.12);
+  transform: translateY(-1px);
+}
+.arch-btn:disabled {
+  opacity: 0.35;
+}
+.arch-btn.icon {
+  width: 32px;
+  padding: 7px 0;
+}
+.arch-btn.danger {
+  margin-left: auto;
+  border-color: rgba(251, 113, 133, 0.4);
+  color: #fda4af;
+}
+.arch-btn.danger:hover {
+  border-color: #fb7185;
+  background: rgba(251, 113, 133, 0.12);
+}
+.arch-btn.fix {
+  margin-left: auto;
+  border-color: rgba(52, 211, 153, 0.45);
+  color: #6ee7b7;
+}
+.arch-btn.fix:hover {
+  border-color: var(--green);
+  background: rgba(52, 211, 153, 0.12);
+}
+
+@media (max-width: 720px) {
+  .arch-btn.danger,
+  .arch-btn.fix {
+    margin-left: 0;
+  }
+  .arch-panel dl {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .arch-panel dt {
+    margin-top: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-broken .arch-db,
+  .is-broken .arch-db .node,
+  .arch-loss {
+    animation: none;
+  }
+}
+
+.arch-panel-head strong.arch-warn {
+  color: #fda4af;
+}
+.arch-panel-head strong.arch-warn::before {
+  content: "⚠ ";
+}
+.viz-arch .viz-head > div {
+  min-width: 0;
+}
