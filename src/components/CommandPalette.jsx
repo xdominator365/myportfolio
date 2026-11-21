@@ -2,6 +2,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { scrollToId } from "../hooks";
 import { SECTIONS } from "./Nav";
 import { profile, socials } from "../data/content";
+import { SECRETS, foundSecrets, triggerEgg } from "./EasterEggs";
+
+/** Hidden features, listed as hints until discovered. */
+function secretCommands() {
+  const found = foundSecrets();
+  const group = `🎮 Secrets · ${found.length}/${SECRETS.length} found`;
+  return SECRETS.map((s) =>
+    found.includes(s.id)
+      ? { group, label: s.label, icon: "★", run: () => triggerEgg(s.id) }
+      : { group, label: `??? — ${s.hint}`, icon: "?", run: () => triggerEgg(s.id) }
+  );
+}
 
 /** ⌘K / Ctrl+K command palette — fuzzy-ish filter, arrow-key navigation. */
 export default function CommandPalette({ open, setOpen, toast }) {
@@ -28,8 +40,11 @@ export default function CommandPalette({ open, setOpen, toast }) {
         icon: "</>",
         run: () => window.open("https://github.com/xdominator365/myportfolio", "_blank"),
       },
+      ...secretCommands(),
     ],
-    [toast]
+    // `open` is a dependency so the found/unfound state refreshes each time the palette opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [toast, open]
   );
 
   const filtered = commands.filter((c) => {
