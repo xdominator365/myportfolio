@@ -1,0 +1,220 @@
+/* ---------- footer: Lighthouse badge + live vitals ---------- */
+
+.lh {
+  position: relative;
+  display: inline-flex;
+}
+.lh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  font: 500 12px var(--font-mono);
+  color: var(--muted);
+  transition: border-color 0.2s, color 0.2s;
+}
+.lh-badge:hover,
+.lh-badge[aria-expanded="true"] {
+  border-color: var(--border-2);
+  color: var(--text);
+}
+.lh-bolt {
+  filter: saturate(0.8);
+}
+.lh-badge i {
+  font-style: normal;
+  font-weight: 700;
+  min-width: 22px;
+  text-align: center;
+}
+.good { --band: #34d399; }
+.meh { --band: #fbbf24; }
+.poor { --band: #fb7185; }
+.pending { --band: var(--dim); }
+.lh-badge i {
+  color: var(--band);
+}
+
+.lh-pop {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+  z-index: 50;
+  width: min(380px, calc(100vw - 32px));
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-2);
+  background: rgba(13, 11, 26, 0.97);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  text-align: left;
+  font-family: var(--font-body);
+  color: var(--text);
+  transform-origin: bottom right;
+  animation: lh-in 0.25s var(--ease) both;
+}
+.lh-pop[hidden] {
+  display: none;
+}
+@keyframes lh-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+}
+.lh-pop-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.lh-pop-head strong {
+  display: block;
+  font: 600 14px var(--font-display);
+}
+.lh-pop-head small {
+  font: 11px var(--font-mono);
+  color: var(--dim);
+}
+.lh-toggle {
+  display: flex;
+  padding: 2px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.lh-toggle button {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font: 11px var(--font-mono);
+  color: var(--muted);
+  text-transform: capitalize;
+}
+.lh-toggle button.on {
+  background: rgba(139, 92, 246, 0.35);
+  color: #fff;
+}
+
+.lh-gauges {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 16px 0 10px;
+}
+.lh-gauge {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+.lh-gauge svg {
+  width: var(--size);
+  height: var(--size);
+}
+.lh-gauge b {
+  position: absolute;
+  top: 0;
+  height: var(--size);
+  display: grid;
+  place-items: center;
+  font: 700 14px var(--font-mono);
+  color: var(--band);
+}
+.lh-gauge span {
+  font-size: 10.5px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.2;
+}
+.lh-track {
+  fill: color-mix(in srgb, var(--band) 10%, transparent);
+  stroke: color-mix(in srgb, var(--band) 20%, transparent);
+  stroke-width: 3;
+}
+.lh-arc {
+  fill: none;
+  stroke: var(--band);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s var(--ease);
+}
+.lh-lab {
+  font: 11px var(--font-mono);
+  color: var(--dim);
+  text-align: center;
+}
+
+.lh-field {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-2);
+}
+.lh-field-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lh-field ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin: 10px 0 8px;
+}
+.lh-field li {
+  display: grid;
+  gap: 2px;
+  padding: 7px 4px;
+  border-radius: 9px;
+  text-align: center;
+  background: color-mix(in srgb, var(--band) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--band) 30%, transparent);
+}
+.lh-field li span {
+  font: 10px var(--font-mono);
+  color: var(--muted);
+}
+.lh-field li b {
+  font: 700 12px var(--font-mono);
+  color: var(--band);
+  white-space: nowrap;
+}
+.lh-field small {
+  display: block;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+@media (max-width: 720px) {
+  .lh-pop {
+    right: auto;
+    left: 50%;
+    translate: -50% 0;
+  }
+  .lh-field ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.footer-stack {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+/* Visually hidden, still announced by screen readers. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

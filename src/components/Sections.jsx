@@ -16,6 +16,7 @@ import {
 import { useClock, useCountUp, useMagnetic, useReveal, useSpotlight, useTilt } from "../hooks";
 import { ArchitectureDiagram, TradingChart } from "./ProjectVisuals";
 import { sendMessage, trackEvent } from "../lib/notify";
+import LighthouseBadge from "./LighthouseBadge";
 
 /* ---------- shared ---------- */
 
@@ -594,7 +595,10 @@ export function Footer() {
         <span className="footer-build">
           <i className="pulse-dot" /> build <code>{__COMMIT__}</code> · {built}
         </span>
-        <span>React · Vite · Canvas · zero UI libraries</span>
+        <span className="footer-stack">
+          React · Vite · Canvas · zero UI libraries
+          <LighthouseBadge />
+        </span>
       </div>
     </footer>
   );
