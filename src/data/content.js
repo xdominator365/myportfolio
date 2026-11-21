@@ -241,13 +241,7 @@ export const persona = {
       tags: ["Agents", "Automation", "Speed"],
     },
   ],
-  // Edit freely — this is the public idea board.
-  ideas: [
-    { name: "MyDhira", note: "AI paper trading for retail investors", stage: "Building", progress: 70 },
-    { name: "Agentic workflow copilot", note: "AI agents that run repetitive business ops", stage: "Prototyping", progress: 35 },
-    { name: "Smart money tracker", note: "Personal finance with investor-grade analytics", stage: "Ideating", progress: 15 },
-    { name: "Something stealth", note: "Ask me over coffee ☕", stage: "Stealth", progress: 5 },
-  ],
+  // The idea board lives in public/progress.json — update it with `npm run idea`.
 };
 
 export const hobbies = [
