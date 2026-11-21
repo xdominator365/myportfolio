@@ -656,7 +656,7 @@ kbd {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border);
 }
-.nav-links button {
+.nav-links a {
   position: relative;
   z-index: 1;
   padding: 8px 15px;
@@ -666,8 +666,8 @@ kbd {
   border-radius: 999px;
   transition: color 0.3s;
 }
-.nav-links button:hover,
-.nav-links button.is-active {
+.nav-links a:hover,
+.nav-links a.is-active {
   color: #fff;
 }
 .nav-pill {

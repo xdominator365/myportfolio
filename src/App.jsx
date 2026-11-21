@@ -26,6 +26,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const onToast = (e) => toast(e.detail);
+    window.addEventListener("hy:toast", onToast);
+    return () => window.removeEventListener("hy:toast", onToast);
+  }, [toast]);
+
+  useEffect(() => {
     // A little something for the devs who open DevTools.
     console.log(
       "%c HY %c Hey, fellow developer 👋  Built by hand with React + Canvas. Press ⌘K / Ctrl+K on the page.",
@@ -40,7 +46,7 @@ export default function App() {
       <Preloader onDone={onLoaded} />
       <Background />
       <Cursor />
-      <Nav onOpenPalette={() => setPaletteOpen(true)} />
+      <Nav onOpenPalette={() => setPaletteOpen(true)} ready={ready} />
       <CommandPalette open={paletteOpen} setOpen={setPaletteOpen} toast={toast} />
 
       <main>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { scrollToId, useActiveSection } from "../hooks";
+import { useHashRouting } from "../lib/router";
 
 export const SECTIONS = [
   { id: "home", label: "Home" },
@@ -14,8 +15,9 @@ export const SECTIONS = [
 ];
 const IDS = SECTIONS.map((s) => s.id);
 
-export default function Nav({ onOpenPalette }) {
+export default function Nav({ onOpenPalette, ready }) {
   const active = useActiveSection(IDS);
+  useHashRouting(SECTIONS, active, ready);
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
@@ -62,14 +64,19 @@ export default function Nav({ onOpenPalette }) {
         <nav className="nav-links" ref={linksRef} aria-label="Primary">
           <span className="nav-pill" style={{ transform: `translateX(${pill.left}px)`, width: pill.width }} />
           {SECTIONS.slice(1).map((s) => (
-            <button
+            <a
               key={s.id}
+              href={`#${s.id}`}
               data-id={s.id}
               className={active === s.id ? "is-active" : ""}
-              onClick={() => go(s.id)}
+              aria-current={active === s.id ? "location" : undefined}
+              onClick={(e) => {
+                e.preventDefault();
+                go(s.id);
+              }}
             >
               {s.label}
-            </button>
+            </a>
           ))}
         </nav>
 
