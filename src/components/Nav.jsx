@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { scrollToId, useActiveSection } from "../hooks";
+import ThemeToggle from "./ThemeToggle";
 
 export const SECTIONS = [
   { id: "home", label: "Home" },
@@ -74,6 +75,7 @@ export default function Nav({ onOpenPalette }) {
         </nav>
 
         <div className="nav-actions">
+          <ThemeToggle />
           <button className="kbd-btn" onClick={onOpenPalette} data-cursor="Search" aria-label="Open command palette">
             <kbd>{isMac ? "⌘" : "Ctrl"}</kbd>
             <kbd>K</kbd>

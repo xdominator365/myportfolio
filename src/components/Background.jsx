@@ -37,9 +37,16 @@ export default function Background() {
       }));
     };
 
+    // Darker, softer particles on the light theme; read per frame so toggling is instant.
+    const ink = () =>
+      document.documentElement.dataset.theme === "light"
+        ? { dot: 45, line: 45, dotA: 0.55, lineA: 0.6 }
+        : { dot: 72, line: 65, dotA: 0.9, lineA: 1 };
+
     const draw = (t) => {
       ctx.clearRect(0, 0, w, h);
       const baseHue = (t / 80) % 360;
+      const k = ink();
 
       for (const p of particles) {
         if (mouse.active) {
@@ -72,8 +79,8 @@ export default function Background() {
           const dy = a.y - b.y;
           const d2 = dx * dx + dy * dy;
           if (d2 < LINK * LINK) {
-            const alpha = (1 - Math.sqrt(d2) / LINK) * 0.35;
-            ctx.strokeStyle = `hsla(${(baseHue + a.hue * 0.3) % 360}, 90%, 65%, ${alpha})`;
+            const alpha = (1 - Math.sqrt(d2) / LINK) * 0.35 * k.lineA;
+            ctx.strokeStyle = `hsla(${(baseHue + a.hue * 0.3) % 360}, 90%, ${k.line}%, ${alpha})`;
             ctx.lineWidth = 0.7;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
@@ -84,7 +91,7 @@ export default function Background() {
         if (mouse.active) {
           const d = Math.hypot(a.x - mouse.x, a.y - mouse.y);
           if (d < 200) {
-            ctx.strokeStyle = `hsla(${(baseHue + 180) % 360}, 95%, 70%, ${(1 - d / 200) * 0.5})`;
+            ctx.strokeStyle = `hsla(${(baseHue + 180) % 360}, 95%, ${k.line + 5}%, ${(1 - d / 200) * 0.5 * k.lineA})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(mouse.x, mouse.y);
@@ -94,7 +101,7 @@ export default function Background() {
       }
 
       for (const p of particles) {
-        ctx.fillStyle = `hsla(${(baseHue + p.hue * 0.3) % 360}, 95%, 72%, 0.9)`;
+        ctx.fillStyle = `hsla(${(baseHue + p.hue * 0.3) % 360}, 95%, ${k.dot}%, ${k.dotA})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
@@ -117,6 +124,9 @@ export default function Background() {
       if (!document.hidden && !reduced) raf = requestAnimationFrame(loop);
     };
 
+    const onTheme = () => reduced && draw(0);
+    window.addEventListener("hy:theme", onTheme);
+
     resize();
     if (reduced) draw(0);
     else raf = requestAnimationFrame(loop);
@@ -131,6 +141,7 @@ export default function Background() {
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("hy:theme", onTheme);
     };
   }, []);
 
