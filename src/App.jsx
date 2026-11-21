@@ -7,6 +7,7 @@ import Hero from "./components/Hero";
 import CommandPalette from "./components/CommandPalette";
 import { About, Contact, Credentials, Experience, Footer, Marquee, Projects, Skills } from "./components/Sections";
 import { Life, Vision } from "./components/Persona";
+import Writing from "./components/Writing";
 import { trackVisit } from "./lib/notify";
 
 export default function App() {
@@ -50,6 +51,7 @@ export default function App() {
         <Experience />
         <Projects />
         <Vision />
+        <Writing />
         <Skills />
         <Credentials />
         <Life />

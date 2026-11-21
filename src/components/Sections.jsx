@@ -343,7 +343,7 @@ export function Skills() {
   const spot = useSpotlight();
   return (
     <section id="skills" className="section">
-      <SectionHead index="05" kicker="Toolbox" title="The stack I reach for.">
+      <SectionHead index="06" kicker="Toolbox" title="The stack I reach for.">
         Python on the backend, AWS underneath, React on top — and the tooling to prove it all works under load.
       </SectionHead>
       <div className="bento" ref={spot}>
@@ -383,7 +383,7 @@ export function Credentials() {
   const { featured, others } = certifications;
   return (
     <section id="credentials" className="section">
-      <SectionHead index="06" kicker="Credentials" title="Verified, certified, graduated." />
+      <SectionHead index="07" kicker="Credentials" title="Verified, certified, graduated." />
 
       <div className="cred-grid">
         <Reveal className="aws-wrap" delay={0.05}>
@@ -542,7 +542,7 @@ export function Contact({ toast }) {
   };
   return (
     <section id="contact" className="section contact">
-      <SectionHead index="08" kicker="Contact" title="Let's build something that scales." />
+      <SectionHead index="09" kicker="Contact" title="Let's build something that scales." />
       <Reveal className="contact-card" delay={0.1}>
         <div className="contact-glow" />
         <div className="contact-split">

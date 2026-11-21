@@ -242,7 +242,7 @@ export function Life() {
   const [gym, travel, movies] = hobbies;
   return (
     <section id="life" className="section">
-      <SectionHead index="07" kicker="Off the clock" title="Lift. Travel. Watch. Repeat.">
+      <SectionHead index="08" kicker="Off the clock" title="Lift. Travel. Watch. Repeat.">
         The non-negotiables that keep me sharp outside the terminal.
       </SectionHead>
       <div className="life-grid" ref={spot}>
