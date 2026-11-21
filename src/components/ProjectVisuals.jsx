@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import "../styles/arch-playground.css";
 import { prefersReducedMotion } from "../hooks";
 
 /** Live, simulated candlestick chart — a nod to MyDhira's paper-trading engine. */
@@ -153,26 +154,172 @@ export function TradingChart() {
   );
 }
 
-/** Animated serverless flow — requests race in, Lambda serializes them, DynamoDB stays consistent. */
-export function ArchitectureDiagram() {
-  const [count, setCount] = useState(0);
+/* =====================================================================
+   Claim Getter — interactive architecture playground.
+
+   Click any component to inspect it, walk through a concurrent write step by
+   step, or "Break it": remove the optimistic lock and watch lost updates pile
+   up in the simulation. That last toggle is the whole story of the project.
+   ===================================================================== */
+
+const NODES = {
+  clients: {
+    title: "Claim requests",
+    what: "Callers create, update and re-prioritise claims — often the same claim, within milliseconds of each other.",
+    flow: "Each request invokes the function with a claim id and the change to apply.",
+    fails: "Duplicate submissions, upstream retries after timeouts, month-end bursts.",
+  },
+  lambda: {
+    title: "AWS Lambda · Python",
+    what: "Stateless handler: validates the payload, computes priority, reads the current item including its version number.",
+    flow: "Scales out horizontally — three concurrent requests can mean three execution environments that know nothing about each other.",
+    fails: "Cold starts, timeouts — and two instances reading the same version at the same moment.",
+  },
+  lock: {
+    title: "Conditional write",
+    what: "Optimistic locking: the write only succeeds if the item still has the version this instance read.",
+    flow: "PutItem … ConditionExpression: version = :read, then version + 1. On ConditionalCheckFailed → re-read and retry with jittered backoff.",
+    fails: "Without it, last writer wins: one update silently overwrites another. Nobody gets an error — the data is just wrong.",
+  },
+  dynamo: {
+    title: "Amazon DynamoDB",
+    what: "The single source of truth for claims. Conditional writes are atomic per item.",
+    flow: "Correctness lives in the database, not in Lambda memory — so it holds no matter how far the functions scale.",
+    fails: "Hot partitions on skewed keys and throttling, absorbed with exponential backoff.",
+  },
+};
+
+// What the lock node says once it has been removed.
+const LOCK_REMOVED = {
+  title: "Lock removed",
+  what: "Writes go straight through — no version check.",
+  flow: "Two instances read version 7 and both write. The second write silently replaces the first.",
+  fails: "Every collision in the counter above is a lost update — a change the caller thinks was saved, but isn't. No error, no alert. This is the class of bug that only shows up at 2 a.m.",
+};
+
+const STEPS = [
+  { node: "clients", text: "Three updates to claim #4521 arrive within 5 ms of each other." },
+  { node: "lambda", text: "Lambda fans out. Three instances each read the item — all of them see version 7." },
+  { node: "lock", text: "All three attempt the write with ConditionExpression: version = 7." },
+  { node: "dynamo", text: "DynamoDB accepts exactly one. The item moves to version 8; the other two get ConditionalCheckFailed." },
+  { node: "lambda", text: "The two losers re-read version 8, re-apply their change and retry with jitter. All three updates land — none lost." },
+];
+
+const CLAIM_Y = [40, 105, 170];
+
+function useClaimSim(locked) {
+  const [sim, setSim] = useState({ requests: 1200, retried: 0, lost: 0, hit: 0 });
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-    const id = setInterval(() => setCount((c) => c + 1), 700);
+    const id = setInterval(() => {
+      // How many writers hit the same claim in this window: usually 1, sometimes 2–3.
+      const r = Math.random();
+      const writers = r < 0.6 ? 1 : r < 0.88 ? 2 : 3;
+      setSim((s) => ({
+        requests: s.requests + writers,
+        retried: s.retried + (locked ? writers - 1 : 0),
+        lost: s.lost + (locked ? 0 : writers - 1),
+        hit: writers > 1 ? s.hit + 1 : s.hit,
+      }));
+    }, 700);
     return () => clearInterval(id);
+  }, [locked]);
+  return [sim, setSim];
+}
+
+function NodeHit({ id, selected, onSelect, children, label }) {
+  const onKey = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelect(id);
+    }
+  };
+  return (
+    <g
+      className={`arch-node ${selected === id ? "is-selected" : ""}`}
+      role="button"
+      tabIndex={0}
+      aria-label={label}
+      aria-pressed={selected === id}
+      onClick={() => onSelect(id)}
+      onKeyDown={onKey}
+      data-cursor="Inspect"
+    >
+      {children}
+    </g>
+  );
+}
+
+export function ArchitectureDiagram() {
+  const [locked, setLocked] = useState(true);
+  const [selected, setSelected] = useState(null);
+  const [step, setStep] = useState(-1); // -1 = free exploration
+  const [playing, setPlaying] = useState(false);
+  const [sim, setSim] = useClaimSim(locked);
+  const hitRef = useRef(sim.hit);
+  const [flash, setFlash] = useState(0);
+
+  // Flash the database on each collision.
+  useEffect(() => {
+    if (sim.hit !== hitRef.current) {
+      hitRef.current = sim.hit;
+      setFlash((f) => f + 1);
+    }
+  }, [sim.hit]);
+
+  // Auto-advance the walkthrough.
+  useEffect(() => {
+    if (!playing) return;
+    if (step >= STEPS.length - 1) return setPlaying(false);
+    const t = setTimeout(() => setStep((s) => s + 1), 3600);
+    return () => clearTimeout(t);
+  }, [playing, step]);
+
+  const focus = step >= 0 ? STEPS[step].node : selected;
+
+  const select = useCallback((id) => {
+    setPlaying(false);
+    setStep(-1);
+    setSelected((cur) => (cur === id ? null : id));
   }, []);
 
+  const startTour = () => {
+    if (playing) return setPlaying(false);
+    setSelected(null);
+    setLocked(true);
+    setStep((s) => (s < 0 || s >= STEPS.length - 1 ? 0 : s));
+    setPlaying(true);
+  };
+
+  const toggleLock = () => {
+    setPlaying(false);
+    setStep(-1);
+    setLocked((l) => !l);
+    setSelected("lock");
+    setSim((s) => ({ ...s, retried: 0, lost: 0 }));
+  };
+
+  const node = focus === "lock" && !locked ? LOCK_REMOVED : focus ? NODES[focus] : null;
+
   return (
-    <div className="viz viz-arch">
+    <div className={`viz viz-arch ${locked ? "" : "is-broken"}`}>
       <div className="viz-head">
         <div>
           <span className="viz-ticker">CLAIM-GETTER · us-east-1</span>
-          <strong className="viz-price">{(1200 + count * 3).toLocaleString()}</strong>
+          <strong className="viz-price">{sim.requests.toLocaleString()}</strong>
           <span className="viz-delta up">requests · simulated</span>
         </div>
-        <span className="viz-live"><i /> 0 write conflicts</span>
+        <span className={`viz-live arch-status ${locked ? "ok" : "bad"}`} aria-live="polite">
+          <i />
+          {locked ? `0 lost · ${sim.retried} retried` : `${sim.lost} lost update${sim.lost === 1 ? "" : "s"}`}
+        </span>
       </div>
-      <svg viewBox="0 0 420 210" className="arch-svg" role="img" aria-label="Claims flow from clients into AWS Lambda and are written safely to DynamoDB">
+
+      <svg
+        viewBox="0 0 420 210"
+        className={`arch-svg ${focus ? "has-focus" : ""}`}
+        role="group"
+        aria-label="Claim Getter architecture: claim requests flow into AWS Lambda, which writes to DynamoDB through a conditional write. Select a component to learn more."
+      >
         <defs>
           <linearGradient id="wire" x1="0" x2="1">
             <stop offset="0" stopColor="#8b5cf6" />
@@ -185,48 +332,124 @@ export function ArchitectureDiagram() {
         </defs>
 
         {/* incoming claims */}
-        {[40, 105, 170].map((cy, i) => (
-          <g key={cy}>
-            <path id={`in${i}`} d={`M70 ${cy} C 120 ${cy}, 130 105, 172 105`} className="wire" />
-            <circle r="4" className="packet p-violet" filter="url(#glow)">
-              <animateMotion dur={`${1.6 + i * 0.35}s`} repeatCount="indefinite" begin={`${i * 0.4}s`}>
-                <mpath href={`#in${i}`} />
-              </animateMotion>
-            </circle>
-            <rect x="12" y={cy - 16} width="58" height="32" rx="9" className="node" />
-            <text x="41" y={cy + 4} className="node-label">claim #{i + 1}</text>
-          </g>
-        ))}
+        <NodeHit id="clients" selected={focus} onSelect={select} label="Claim requests">
+          {CLAIM_Y.map((cy, i) => (
+            <g key={cy}>
+              <path id={`in${i}`} d={`M70 ${cy} C 120 ${cy}, 130 105, 172 105`} className="wire" />
+              <circle r="4" className="packet p-violet" filter="url(#glow)">
+                <animateMotion dur={`${1.6 + i * 0.35}s`} repeatCount="indefinite" begin={`${i * 0.4}s`}>
+                  <mpath href={`#in${i}`} />
+                </animateMotion>
+              </circle>
+              <rect x="12" y={cy - 16} width="58" height="32" rx="9" className="node" />
+              <text x="41" y={cy + 4} className="node-label">claim #{i + 1}</text>
+            </g>
+          ))}
+          <rect x="4" y="16" width="74" height="178" className="arch-hit" />
+        </NodeHit>
 
         {/* lambda */}
-        <g className="lambda-node">
+        <NodeHit id="lambda" selected={focus} onSelect={select} label="AWS Lambda">
           <rect x="172" y="72" width="76" height="66" rx="16" className="node node-hot" />
           <text x="210" y="106" className="node-icon">λ</text>
           <text x="210" y="126" className="node-label">Lambda</text>
           <circle cx="210" cy="105" r="44" className="ring-pulse" />
-        </g>
+        </NodeHit>
+
+        {/* retry loop — only meaningful while the lock is in place */}
+        {locked && (
+          <g className="arch-retry">
+            <path id="retry" d="M283 90 C 276 52, 236 50, 222 70" className="wire wire-retry" />
+            <circle r="3.2" className="packet p-amber">
+              <animateMotion dur="1.4s" repeatCount="indefinite" begin="0.3s">
+                <mpath href="#retry" />
+              </animateMotion>
+            </circle>
+            <text x="252" y="48" className="node-label arch-retry-label">retry</text>
+          </g>
+        )}
 
         {/* to dynamo */}
         <path id="out" d="M248 105 L 318 105" className="wire wire-strong" />
-        <circle r="5" className="packet p-cyan" filter="url(#glow)">
+        <circle r="5" className={`packet ${locked ? "p-cyan" : "p-red"}`} filter="url(#glow)">
           <animateMotion dur="0.9s" repeatCount="indefinite">
             <mpath href="#out" />
           </animateMotion>
         </circle>
-        <text x="283" y="94" className="lock">🔒</text>
+        {!locked && (
+          <circle r="5" className="packet p-red" filter="url(#glow)">
+            <animateMotion dur="0.9s" repeatCount="indefinite" begin="0.3s">
+              <mpath href="#out" />
+            </animateMotion>
+          </circle>
+        )}
+
+        <NodeHit id="lock" selected={focus} onSelect={select} label="Conditional write (optimistic lock)">
+          <circle cx="283" cy="105" r="15" className="node arch-lock" />
+          <text x="283" y="110" className="lock">{locked ? "🔒" : "🔓"}</text>
+        </NodeHit>
 
         {/* dynamodb */}
-        <g>
-          <ellipse cx="365" cy="80" rx="40" ry="11" className="node" />
-          <path d="M325 80 v50 a40 11 0 0 0 80 0 v-50" className="node" />
-          <ellipse cx="365" cy="105" rx="40" ry="11" className="db-band" />
+        <NodeHit id="dynamo" selected={focus} onSelect={select} label="Amazon DynamoDB">
+          <g className="arch-db" key={flash}>
+            <ellipse cx="365" cy="80" rx="40" ry="11" className="node" />
+            <path d="M325 80 v50 a40 11 0 0 0 80 0 v-50" className="node" />
+            <ellipse cx="365" cy="105" rx="40" ry="11" className="db-band" />
+          </g>
           <text x="365" y="152" className="node-label">DynamoDB</text>
-        </g>
+          {!locked && flash > 0 && (
+            <text key={`l${flash}`} x="365" y="62" className="arch-loss">−1 update</text>
+          )}
+          <rect x="320" y="60" width="90" height="100" className="arch-hit" />
+        </NodeHit>
       </svg>
-      <div className="viz-orders">
-        <span>concurrency: <b className="ok">safe</b></span>
-        <span>runtime: <b>python</b></span>
-        <span>infra: <b>serverless</b></span>
+
+      <div className="arch-panel" aria-live="polite">
+        {step >= 0 ? (
+          <>
+            <div className="arch-panel-head">
+              <span className="arch-step">Step {step + 1} of {STEPS.length}</span>
+              <strong>{NODES[STEPS[step].node].title}</strong>
+            </div>
+            <p>{STEPS[step].text}</p>
+            <div className="arch-progress">
+              {STEPS.map((_, i) => (
+                <button key={i} className={i <= step ? "on" : ""} onClick={() => { setPlaying(false); setStep(i); }} aria-label={`Go to step ${i + 1}`} />
+              ))}
+            </div>
+          </>
+        ) : node ? (
+          <>
+            <div className="arch-panel-head">
+              <strong className={node === LOCK_REMOVED ? "arch-warn" : undefined}>{node.title}</strong>
+              <button className="arch-close" onClick={() => setSelected(null)} aria-label="Close details">×</button>
+            </div>
+            <dl>
+              <dt>What</dt><dd>{node.what}</dd>
+              <dt>Flow</dt><dd>{node.flow}</dd>
+              <dt>Breaks when</dt><dd>{node.fails}</dd>
+            </dl>
+          </>
+        ) : (
+          <p className="arch-hint">
+            Tap any component to inspect it — or walk through what happens when three people update the same claim at once.
+          </p>
+        )}
+      </div>
+
+      <div className="arch-controls">
+        <button className="arch-btn" onClick={startTour}>
+          {playing ? "❚❚ Pause" : step >= 0 && step < STEPS.length - 1 ? "▶ Resume" : "▶ Walk through"}
+        </button>
+        {step >= 0 && (
+          <>
+            <button className="arch-btn icon" onClick={() => { setPlaying(false); setStep((s) => Math.max(0, s - 1)); }} disabled={step === 0} aria-label="Previous step">‹</button>
+            <button className="arch-btn icon" onClick={() => { setPlaying(false); setStep((s) => Math.min(STEPS.length - 1, s + 1)); }} disabled={step === STEPS.length - 1} aria-label="Next step">›</button>
+          </>
+        )}
+        <button className={`arch-btn ${locked ? "danger" : "fix"}`} onClick={toggleLock} aria-pressed={!locked}>
+          {locked ? "🔓 Break it — remove the lock" : "🔒 Fix it — restore the lock"}
+        </button>
       </div>
     </div>
   );
