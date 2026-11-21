@@ -49,14 +49,15 @@ export default function Nav({ onOpenPalette }) {
     <>
       <div className="scroll-progress" style={{ transform: `scaleX(${progress})` }} />
       <header className={`nav ${scrolled ? "is-scrolled" : ""}`}>
-        <button className="nav-logo" onClick={() => go("home")} aria-label="Back to top">
-          <span className="logo-mark">
+        <button className="nav-logo" onClick={() => go("home")}>
+          <span className="logo-mark" aria-hidden="true">
             <span>H</span>
             <span>Y</span>
           </span>
           <span className="logo-text">
             harshit<span className="grad-text">.dev</span>
           </span>
+          <span className="sr-only"> — back to top</span>
         </button>
 
         <nav className="nav-links" ref={linksRef} aria-label="Primary">

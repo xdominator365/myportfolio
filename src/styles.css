@@ -11,7 +11,7 @@
   --border-2: rgba(255, 255, 255, 0.17);
   --text: #eeedf7;
   --muted: #9b99b4;
-  --dim: #6b6985;
+  --dim: #787692; /* 4.6:1 on --bg (WCAG AA for small text) */
 
   --violet: #8b5cf6;
   --pink: #ec4899;

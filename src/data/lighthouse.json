@@ -1,0 +1,45 @@
+{
+  "url": "https://xdominator365.github.io/myportfolio/",
+  "measuredAt": "2026-11-21T19:19:18.972Z",
+  "lighthouseVersion": "12.2.1",
+  "mobile": {
+    "scores": {
+      "performance": 94,
+      "accessibility": 96,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "fcp": 2005,
+      "lcp": 2008,
+      "tbt": 4,
+      "cls": 0.014,
+      "si": 4955
+    },
+    "runs": [
+      90,
+      94,
+      94
+    ]
+  },
+  "desktop": {
+    "scores": {
+      "performance": 93,
+      "accessibility": 96,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "fcp": 1041,
+      "lcp": 1041,
+      "tbt": 0,
+      "cls": 0.012,
+      "si": 2128
+    },
+    "runs": [
+      93,
+      93,
+      96
+    ]
+  }
+}
