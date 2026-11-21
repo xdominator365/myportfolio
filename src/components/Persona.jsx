@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { hobbies, persona } from "../data/content";
 import { prefersReducedMotion, useCountUp, useReveal, useSpotlight, useTilt } from "../hooks";
 import { Reveal, SectionHead } from "./Sections";
+import { deltaOf, timeAgo, useLiveIdeas } from "../lib/ideas";
+import "../styles/idea-lab.css";
 
 /* =====================================================================
    VISION — investor / builder persona
@@ -50,8 +52,53 @@ function CompoundCurve() {
   );
 }
 
-function IdeaRow({ idea, i, start }) {
-  const pct = useCountUp(idea.progress, start, { duration: 1400 + i * 250 });
+function Sparkline({ points }) {
+  if (!points || points.length < 2) return null;
+  const vals = points.map((p) => p[1]);
+  const lo = Math.min(...vals);
+  const hi = Math.max(...vals);
+  const span = hi - lo || 1;
+  const xy = vals.map((v, i) => [(i / (vals.length - 1)) * 56 + 2, hi === lo ? 9 : 15 - ((v - lo) / span) * 12]);
+  const [lx, ly] = xy[xy.length - 1];
+  return (
+    <svg className="idea-spark" viewBox="0 0 60 18" aria-hidden="true">
+      <polyline points={xy.map((p) => p.join(",")).join(" ")} />
+      <circle cx={lx} cy={ly} r="2.2" />
+    </svg>
+  );
+}
+
+/** Like useCountUp, but later target changes animate from the current value, not from 0. */
+function useTween(target, start, duration) {
+  const [value, setValue] = useState(0);
+  const from = useRef(0);
+  useEffect(() => {
+    if (!start) return;
+    if (prefersReducedMotion()) {
+      from.current = target;
+      return setValue(target);
+    }
+    const a = from.current;
+    const t0 = performance.now();
+    let raf;
+    const tick = (now) => {
+      const p = Math.min(1, (now - t0) / duration);
+      const v = Math.round(a + (target - a) * (1 - Math.pow(1 - p, 4)));
+      from.current = v;
+      setValue(v);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, start, duration]);
+  return value;
+}
+
+const fmtDay = (d) => new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+function IdeaRow({ idea, i, start, now }) {
+  const pct = useTween(idea.progress, start, 1400 + i * 250);
+  const delta = deltaOf(idea);
   return (
     <li className={`idea stage-${idea.stage.toLowerCase()}`} style={{ "--i": i }}>
       <div className="idea-top">
@@ -64,13 +111,38 @@ function IdeaRow({ idea, i, start }) {
       <div className="idea-bar">
         <span style={{ width: `${pct}%` }} />
       </div>
+      <div className="idea-meta">
+        <b className="idea-pct">{pct}%</b>
+        <Sparkline points={idea.history} />
+        {delta && (
+          <span className={`idea-delta ${delta.value > 0 ? "up" : delta.value < 0 ? "down" : "flat"}`}>
+            {delta.value > 0 ? `▲ ${delta.value} pts` : delta.value < 0 ? `▼ ${-delta.value} pts` : "steady"} since {fmtDay(delta.since)}
+          </span>
+        )}
+        {idea.updatedAt && (
+          <time dateTime={idea.updatedAt} title={new Date(idea.updatedAt).toLocaleString("en-GB")}>
+            updated {timeAgo(idea.updatedAt, now)}
+          </time>
+        )}
+      </div>
     </li>
   );
+}
+
+function useNow(every = 60000) {
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), every);
+    return () => clearInterval(id);
+  }, [every]);
+  return now;
 }
 
 export function Vision() {
   const spot = useSpotlight();
   const [boardRef, boardVisible] = useReveal({ threshold: 0.25 });
+  const ideas = useLiveIdeas();
+  const now = useNow();
   return (
     <section id="vision" className="section">
       <SectionHead index="04" kicker="Vision" title="Engineer today. Investor & founder tomorrow.">
@@ -105,16 +177,19 @@ export function Vision() {
         <Reveal className="idea-board spot-card" delay={0.05}>
           <div className="idea-head">
             <span className="card-kicker">💡 Idea lab</span>
-            <span className="idea-live">
-              <i className="pulse-dot" /> pipeline
+            <span className={`idea-live ${ideas.source}`} title={ideas.syncedAt ? `Synced ${timeAgo(ideas.syncedAt, now)}` : "Showing the bundled snapshot"}>
+              <i className="pulse-dot" /> {ideas.source === "live" ? "live" : "pipeline"}
             </span>
           </div>
           <ul ref={boardRef}>
-            {persona.ideas.map((idea, i) => (
-              <IdeaRow key={idea.name} idea={idea} i={i} start={boardVisible} />
+            {ideas.data.ideas.map((idea, i) => (
+              <IdeaRow key={idea.id || idea.name} idea={idea} i={i} start={boardVisible} now={now} />
             ))}
           </ul>
-          <p className="idea-foot">Want to build or back one of these? Let's talk ↓</p>
+          <p className="idea-foot">
+            <span>Want to build or back one of these? Let's talk ↓</span>
+            {ideas.data.updatedAt && <span className="idea-stamp">board updated {timeAgo(ideas.data.updatedAt, now)}</span>}
+          </p>
         </Reveal>
         <Reveal className="spot-card compound-card" delay={0.15}>
           <CompoundCurve />
