@@ -1,0 +1,11 @@
+1. foreign origin     → 403
+2. CORS preflight     → 204 http://localhost:5180
+3. GET                → {"error":"POST only"} 405
+4. bad payload        → {"error":"invalid messages"} 400
+5. oversized question → {"error":"invalid messages"} 400
+6. valid, bad API key → data: {"error":"upstream 401"}  
+7. valid (2nd)        → data: {"error":"upstream 401"}
+8. over per-IP cap    → data: {"error":"upstream 401"}
+
+ 200
+9. 4th request, cap=3 → {"error":"daily limit reached"} 429

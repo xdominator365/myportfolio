@@ -29,6 +29,9 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Optional: URL of the deployed chat proxy (serverless/chat-worker). Unset → widget runs in offline mode.
+          VITE_CHAT_ENDPOINT: ${{ vars.CHAT_ENDPOINT }}
 
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4

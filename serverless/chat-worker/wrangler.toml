@@ -1,0 +1,19 @@
+name = "portfolio-chat"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ALLOWED_ORIGINS = "https://xdominator365.github.io,http://localhost:5173,http://localhost:5180"
+CONTEXT_URL = "https://xdominator365.github.io/myportfolio/chat-context.json"
+MODEL = "claude-opus-5-5"
+PER_IP_DAILY = "20"
+GLOBAL_DAILY = "500"
+
+# Optional but recommended: durable daily counters (without it, limits are per-isolate).
+# Create with `npx wrangler kv namespace create LIMITS` and paste the id:
+# [[kv_namespaces]]
+# binding = "LIMITS"
+# id = "<your-kv-namespace-id>"
+
+# Secret — never commit it:  npx wrangler secret put ANTHROPIC_API_KEY
