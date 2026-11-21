@@ -8,6 +8,7 @@ import CommandPalette from "./components/CommandPalette";
 import { About, Contact, Credentials, Experience, Footer, Marquee, Projects, Skills } from "./components/Sections";
 import { Life, Vision } from "./components/Persona";
 import { trackVisit } from "./lib/notify";
+import { startLivingFavicon } from "./lib/favicon";
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -24,6 +25,8 @@ export default function App() {
   useEffect(() => {
     trackVisit();
   }, []);
+
+  useEffect(() => startLivingFavicon(), []);
 
   useEffect(() => {
     // A little something for the devs who open DevTools.
