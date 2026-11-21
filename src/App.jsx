@@ -5,6 +5,7 @@ import Preloader from "./components/Preloader";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import CommandPalette from "./components/CommandPalette";
+import ChatWidget from "./components/ChatWidget";
 import { About, Contact, Credentials, Experience, Footer, Marquee, Projects, Skills } from "./components/Sections";
 import { Life, Vision } from "./components/Persona";
 import { trackVisit } from "./lib/notify";
@@ -56,6 +57,7 @@ export default function App() {
         <Contact toast={toast} />
       </main>
       <Footer />
+      <ChatWidget />
 
       <div className={`toast ${toastMsg ? "is-shown" : ""}`} role="status" aria-live="polite">
         <span className="pulse-dot" /> {toastMsg}
