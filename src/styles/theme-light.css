@@ -1,0 +1,246 @@
+/* =====================================================================
+   Light theme ("daylight").
+
+   The page becomes lavender-tinted paper with deeper brand accents. Panels
+   that *are* screens — the code editor, live visualisations, terminals,
+   toasts, chips over photos — stay dark, like real windows on a light desk.
+   They do that by re-declaring the dark tokens, so anything inside them that
+   uses var(--text) etc. keeps working without per-component overrides.
+   ===================================================================== */
+
+:root[data-theme="light"] {
+  --bg: #f5f3fa;
+  --bg-2: #ece9f5;
+  --surface: rgba(255, 255, 255, 0.62);
+  --surface-2: rgba(255, 255, 255, 0.85);
+  --border: rgba(30, 24, 64, 0.1);
+  --border-2: rgba(30, 24, 64, 0.18);
+  --text: #17142b;
+  --muted: #4c4866;
+  --dim: #686482;
+
+  --violet: #7c3aed;
+  --pink: #be185d;
+  --cyan: #0e7490;
+  --amber: #b45309;
+  --lime: #4d7c0f;
+  --blue: #2563eb;
+  --green: #047857;
+
+  --grad: linear-gradient(100deg, #7c3aed, #db2777 35%, #d97706 60%, #0891b2 85%, #7c3aed);
+  --grad-soft: linear-gradient(135deg, rgba(124, 58, 237, 0.14), rgba(219, 39, 119, 0.1), rgba(8, 145, 178, 0.12));
+  color-scheme: light;
+}
+
+/* ---------- dark islands ---------- */
+:root[data-theme="light"] :is(.code-card, .viz, .terminal, .toast, .aws-card, .portrait-tag, .hud-chip, .filmstrip, .float-chip, .egg-term, .reader, .lh-pop) {
+  --text: #eeedf7;
+  --muted: #9b99b4;
+  --dim: #8a88a6;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-2: rgba(255, 255, 255, 0.17);
+  --violet: #8b5cf6;
+  --pink: #ec4899;
+  --cyan: #22d3ee;
+  --amber: #f59e0b;
+  --lime: #a3e635;
+  --blue: #60a5fa;
+  --green: #34d399;
+  color-scheme: dark;
+  color: var(--text);
+}
+:root[data-theme="light"] .terminal {
+  background: linear-gradient(160deg, #1a1730, #0d0b1a);
+  box-shadow: 0 24px 60px -24px rgba(30, 24, 64, 0.45);
+}
+:root[data-theme="light"] :is(.code-card, .viz) {
+  box-shadow: 0 40px 80px -30px rgba(30, 24, 64, 0.45), 0 0 0 1px rgba(30, 24, 64, 0.08);
+}
+:root[data-theme="light"] .toast {
+  box-shadow: 0 20px 50px -14px rgba(30, 24, 64, 0.45);
+}
+
+/* ---------- background ---------- */
+:root[data-theme="light"] .bg-aurora {
+  opacity: 0.32;
+}
+:root[data-theme="light"] .blob {
+  mix-blend-mode: multiply;
+}
+:root[data-theme="light"] .bg-grid {
+  background-image: linear-gradient(rgba(30, 24, 64, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 24, 64, 0.05) 1px, transparent 1px);
+}
+:root[data-theme="light"] .bg-noise {
+  opacity: 0.035;
+}
+
+/* ---------- cursor ---------- */
+:root[data-theme="light"] .cursor-dot {
+  background: var(--violet);
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.6);
+}
+:root[data-theme="light"] .cursor-ring::before {
+  border-color: rgba(30, 24, 64, 0.45);
+}
+
+/* ---------- type that was hard-coded white ---------- */
+:root[data-theme="light"] :is(.chip:hover, .role-text, .name-line.outline:hover, .bento-items span:hover, .awards li:hover, .job-tabs button:hover) {
+  color: var(--text);
+}
+:root[data-theme="light"] :is(.chip, .palette-list button, .job-list li, .project-list li, .job-summary, .code-tab) {
+  color: var(--text);
+}
+:root[data-theme="light"] :is(.job-company, .edu-card p) {
+  color: var(--violet);
+}
+:root[data-theme="light"] .outline-text {
+  -webkit-text-stroke-color: rgba(30, 24, 64, 0.28);
+}
+:root[data-theme="light"] .name-line.outline {
+  -webkit-text-stroke-color: rgba(30, 24, 64, 0.72);
+}
+:root[data-theme="light"] .footer-big .outline-text {
+  -webkit-text-stroke-color: rgba(30, 24, 64, 0.14);
+}
+:root[data-theme="light"] .manifesto span {
+  background-image: linear-gradient(90deg, var(--text) 0 50%, rgba(30, 24, 64, 0.14) 50% 100%);
+}
+:root[data-theme="light"] .manifesto span:last-child {
+  background-image: linear-gradient(90deg, var(--green), var(--cyan) 50%, rgba(30, 24, 64, 0.14) 50% 100%);
+}
+
+/* ---------- nav ---------- */
+:root[data-theme="light"] .nav.is-scrolled {
+  background: rgba(250, 249, 253, 0.75);
+  box-shadow: 0 10px 40px -16px rgba(30, 24, 64, 0.25);
+}
+:root[data-theme="light"] .nav-links {
+  background: rgba(255, 255, 255, 0.55);
+}
+:root[data-theme="light"] .nav-links > :is(a, button):hover:not(.is-active) {
+  color: var(--text);
+}
+:root[data-theme="light"] .mobile-menu {
+  background: rgba(245, 243, 250, 0.95);
+}
+
+:root[data-theme="light"] :is(.nav-pill, .job-tabs-indicator) {
+  background: linear-gradient(135deg, #7c3aed, #c026d3);
+  box-shadow: 0 6px 18px -6px rgba(124, 58, 237, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+:root[data-theme="light"] .job-period {
+  color: var(--green);
+  background: rgba(4, 120, 87, 0.08);
+}
+:root[data-theme="light"] .job-period.past {
+  color: var(--muted);
+}
+:root[data-theme="light"] .job-unit {
+  color: var(--pink);
+}
+
+/* ---------- surfaces that were white-on-dark glass ---------- */
+:root[data-theme="light"] :is(.btn-ghost, .hero-badge, .job-tabs, .bento-items span, .idea, .job-list li, .job-period.past) {
+  background: rgba(255, 255, 255, 0.6);
+}
+:root[data-theme="light"] .btn-ghost:hover {
+  border-color: rgba(30, 24, 64, 0.35);
+}
+:root[data-theme="light"] :is(.job-card, .quote-card, .contact-card, .gym-inner) {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 24px 50px -28px rgba(30, 24, 64, 0.3);
+}
+:root[data-theme="light"] .contact-form {
+  background: rgba(255, 255, 255, 0.55);
+}
+:root[data-theme="light"] :is(.field input, .field textarea) {
+  background: rgba(255, 255, 255, 0.75);
+}
+:root[data-theme="light"] .idea-bar {
+  background: rgba(30, 24, 64, 0.08);
+}
+:root[data-theme="light"] .cc-base {
+  stroke: rgba(30, 24, 64, 0.15);
+}
+:root[data-theme="light"] .orbit-ring {
+  border-color: rgba(30, 24, 64, 0.2);
+}
+:root[data-theme="light"] .palette-backdrop {
+  background: rgba(30, 24, 64, 0.22);
+}
+:root[data-theme="light"] .palette {
+  background: rgba(252, 251, 255, 0.95);
+  box-shadow: 0 30px 80px -20px rgba(30, 24, 64, 0.45), 0 0 0 1px rgba(124, 58, 237, 0.15);
+}
+:root[data-theme="light"] .spot-card {
+  box-shadow: 0 18px 40px -30px rgba(30, 24, 64, 0.35);
+}
+
+/* ---------- toggle ---------- */
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.25s, transform 0.25s var(--ease);
+}
+.theme-toggle:hover {
+  border-color: var(--border-2);
+  transform: rotate(-12deg);
+}
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  overflow: visible;
+}
+.tt-core {
+  fill: currentColor;
+  transform-origin: 12px 12px;
+  transition: transform 0.5s var(--ease);
+}
+.tt-mask {
+  transition: transform 0.55s var(--ease);
+}
+.tt-rays line {
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.tt-rays {
+  transform-origin: 12px 12px;
+  transition: transform 0.55s var(--ease-back), opacity 0.35s;
+}
+/* Dark: a crescent moon — the core grows, the mask slides over it, rays retract.
+   (Transforms rather than animating r/cx, which Safari won't transition.) */
+.theme-toggle.is-dark .tt-core {
+  transform: scale(1.6);
+}
+.theme-toggle.is-dark .tt-mask {
+  transform: translate(-7px, 5px);
+}
+.theme-toggle.is-dark .tt-rays {
+  transform: rotate(-90deg) scale(0.4);
+  opacity: 0;
+}
+/* Light: full sun. */
+.theme-toggle.is-light {
+  color: #d97706;
+}
+
+/* ---------- transitions ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-fading,
+html.theme-fading * {
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease !important;
+}

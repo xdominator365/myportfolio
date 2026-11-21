@@ -1,0 +1,5 @@
+initial (OS dark): dark | stored=null | meta=#07060f
+after click: light | stored=light | meta=#f5f3fa
+after reload (first paint): light
+OS change ignored when user chose: light | stored=light | meta=#f5f3fa
+no choice → follows OS live: light | stored=null | meta=#f5f3fa

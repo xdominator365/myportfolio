@@ -8,6 +8,20 @@
     <meta name="theme-color" content="#07060f" />
     <meta name="color-scheme" content="dark" />
     <meta name="darkreader-lock" />
+    <script>
+      // Theme before first paint: saved choice, else the OS preference. No flash.
+      (function () {
+        try {
+          var t = localStorage.getItem("hy-theme");
+          if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+          document.documentElement.dataset.theme = t;
+          if (t === "light") {
+            document.querySelector('meta[name="theme-color"]').content = "#f5f3fa";
+            document.querySelector('meta[name="color-scheme"]').content = "light";
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Open Graph / LinkedIn / WhatsApp -->
     <meta property="og:type" content="website" />
