@@ -5,6 +5,7 @@ import Preloader from "./components/Preloader";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import CommandPalette from "./components/CommandPalette";
+import EasterEggs from "./components/EasterEggs";
 import { About, Contact, Credentials, Experience, Footer, Marquee, Projects, Skills } from "./components/Sections";
 import { Life, Vision } from "./components/Persona";
 import { trackVisit } from "./lib/notify";
@@ -28,7 +29,7 @@ export default function App() {
   useEffect(() => {
     // A little something for the devs who open DevTools.
     console.log(
-      "%c HY %c Hey, fellow developer 👋  Built by hand with React + Canvas. Press ⌘K / Ctrl+K on the page.",
+      "%c HY %c Hey, fellow developer 👋  Built by hand with React + Canvas. Press ⌘K / Ctrl+K on the page — there are secrets in there.",
       "background:linear-gradient(90deg,#8b5cf6,#ec4899,#22d3ee);color:#fff;font-weight:800;padding:4px 8px;border-radius:6px",
       "color:#a78bfa;font-weight:600"
     );
@@ -42,6 +43,7 @@ export default function App() {
       <Cursor />
       <Nav onOpenPalette={() => setPaletteOpen(true)} />
       <CommandPalette open={paletteOpen} setOpen={setPaletteOpen} toast={toast} />
+      <EasterEggs toast={toast} />
 
       <main>
         <Hero ready={ready} />
